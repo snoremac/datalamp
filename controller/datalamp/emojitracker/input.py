@@ -43,7 +43,7 @@ class EmojiTrackerInput(object):
       return emoji_dict
       
       
-class RankDecorator(object):
+class RankAddressDecorator(object):
   
   def __init__(self, chain, config):
     self.chain = chain
@@ -68,9 +68,9 @@ class RankDecorator(object):
     emoji_dict = dict(emoji_id = None)
     while emoji_dict["emoji_id"] not in self.emoji_ranks:
       emoji_dict = self.chain.next()
-    emoji_dict["rank"] = self.emoji_ranks[emoji_dict["emoji_id"]]
+    emoji_dict["address"] = self.emoji_ranks[emoji_dict["emoji_id"]]
     return emoji_dict
-    
+
 
 class SumDecorator(object):
 

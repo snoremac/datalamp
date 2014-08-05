@@ -1,8 +1,10 @@
 
+from datalamp.common import SpiralAddressDecorator
 from datalamp.chaser import ChaserInput
 
 INPUT_CHAIN = [
-  ChaserInput
+  ChaserInput,
+  SpiralAddressDecorator
 ]
 
 pixels = [(0, 0, 0) for i in range(64)]
@@ -15,6 +17,9 @@ def input_chain(config):
 	
 def on_tick(events):
   global pixels
+  center_address = 35
+  
   for event in events:
-    pixels = [(0, 0, 0) for i in range(64)]
-    pixels[event["index"]] = (255, 255, 255)
+    if event["address"] == center_address:
+      pixels = [(0, 0, 0) for i in range(64)]  
+    pixels[event["address"]] = (255, 255, 255)

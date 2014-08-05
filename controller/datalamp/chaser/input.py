@@ -18,7 +18,7 @@ class ChaserInput(object):
     while (time.clock() < end_delay):
 			pass
       
-    chaser_dict = dict(index = self.last_index)
+    chaser_dict = dict(address = self.last_index)
     self.last_index += 1
     if (self.last_index == 64):
       self.last_index = 0

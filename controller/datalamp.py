@@ -6,10 +6,11 @@ import sys
 
 from datalamp import config
 from datalamp.emojitracker import sum
-from datalamp.chaser import chaser
+from datalamp.chaser import basic
+from datalamp.chaser import trail
 from datalamp import runner
 
-PROGRAMS = { "chaser": chaser, "emoji-sum": sum }
+PROGRAMS = { "chaser": basic, "chaser-trail": trail, "emoji-sum": sum }
 
 def parse_args(argv):
   argument_parser = argparse.ArgumentParser()

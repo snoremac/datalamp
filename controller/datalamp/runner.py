@@ -24,7 +24,7 @@ class ConsoleRunner(object):
 	
 		for event in program.input_chain(config.config):
 			program.on_tick([event])
-			pp.pprint(program.pixels)
+			pp.pprint(event)
 
 
 class OPCRunner(object):

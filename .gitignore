@@ -1,0 +1,14 @@
+.DS_Store
+*.tmproj
+*.o
+*.a
+*.elf
+*.eep
+*.hex
+build
+doc
+tty.mcu
+sim/sim-basic
+sim/sim
+*.d
+*.pyc

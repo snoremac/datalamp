@@ -14,8 +14,8 @@ class ChaserInput(object):
     return self.next()
 
   def next(self):
-    end_delay = time.clock() + self.event_delay
-    while (time.clock() < end_delay):
+    end_delay = time.time() + self.event_delay
+    while (time.time() < end_delay):
 			pass
       
     chaser_dict = dict(address = self.last_index)

@@ -5,5 +5,5 @@ OPC_HOME=$HOME/software/arduino/openpixelcontrol
 
 mkdir -p $EMOJIPXEL_HOME/build
 
-$EMOJIPXEL_HOME/bin/neopixel-layout.py > $EMOJIPXEL_HOME/build/neopixel-layout.json
-$OPC_HOME/bin/gl_server $EMOJIPXEL_HOME/build/neopixel-layout.json
+$EMOJIPXEL_HOME/bin/layout $@ > $EMOJIPXEL_HOME/build/neomatrix-layout.json
+$OPC_HOME/bin/gl_server $EMOJIPXEL_HOME/build/neomatrix-layout.json

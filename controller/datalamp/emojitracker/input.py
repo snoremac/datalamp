@@ -5,6 +5,8 @@ import re
 import time
 import urllib
 
+import datalamp
+
 class EmojiTrackerInput(object):
   
   def __init__(self, chain, config):
@@ -24,8 +26,8 @@ class EmojiTrackerInput(object):
     return self.next()
 
   def next(self):
-    end_delay = time.clock() + self.event_delay
-    while (time.clock() < end_delay):
+    end_delay = time.time() + self.event_delay
+    while (time.time() < end_delay):
 			pass
       
     emoji_dict = None
@@ -35,7 +37,7 @@ class EmojiTrackerInput(object):
       line = self.stream.readline()
       match = re.search("data:(.+)", line)
       if (match):
-    	 	emoji_dict = dict(emoji_id = match.group(1))
+    	 	emoji_dict = dict(id = match.group(1))
         
     if line == '':
       raise StopIteration()
@@ -56,7 +58,9 @@ class RankAddressDecorator(object):
       stream = open(config.rankings_url)
     
     rankings = json.loads(stream.read())
-    self.emoji_ranks = { data["id"]: ranking for ranking, data in enumerate(rankings) if int(config.max_emojis) > ranking >= 0 }
+    
+    total_pixels = (datalamp.TILE_LENGTH ** 2) * config.tiles
+    self.emoji_ranks = { data["id"]: ranking for ranking, data in enumerate(rankings) if total_pixels > ranking >= 0 }
     
   def __iter__(self):
     return self
@@ -65,30 +69,9 @@ class RankAddressDecorator(object):
     return self.next()
 
   def next(self):
-    emoji_dict = dict(emoji_id = None)
-    while emoji_dict["emoji_id"] not in self.emoji_ranks:
+    emoji_dict = dict(id = None)
+    while emoji_dict["id"] not in self.emoji_ranks:
       emoji_dict = self.chain.next()
-    emoji_dict["address"] = self.emoji_ranks[emoji_dict["emoji_id"]]
-    return emoji_dict
-
-
-class SumDecorator(object):
-
-  def __init__(self, chain, config):
-    self.chain = chain
-    self.emoji_sums = {}
-    
-  def __iter__(self):
-    return self
-  
-  def __next__(self):
-    return self.next()
-
-  def next(self):
-    emoji_dict = self.chain.next()
-    if emoji_dict["emoji_id"] not in self.emoji_sums:
-      self.emoji_sums[emoji_dict["emoji_id"]] = 0
-    self.emoji_sums[emoji_dict["emoji_id"]] += 1
-    emoji_dict["sum"] = self.emoji_sums[emoji_dict["emoji_id"]]
+    emoji_dict["address"] = self.emoji_ranks[emoji_dict["id"]]
     return emoji_dict
 

@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+
+import argparse
+from os.path import dirname, realpath
+import sys
+
+sys.path.append(dirname(dirname(realpath(__file__))))
+import datalamp
+
+argument_parser = argparse.ArgumentParser()
+argument_parser.add_argument("-t", "--tiles", type=int, default=1, metavar="TILES", help="Number of NeoMatrix tiles in layout")
+args = argument_parser.parse_args(sys.argv[1:])
+
+matrix_length = args.tiles * datalamp.TILE_LENGTH
+
+spacing = 0.2
+lines = []
+print "["
+
+delim = ""
+for tile in range(args.tiles):
+  for row in reversed(range((matrix_length / -2), (matrix_length / 2))):
+    start_column = (matrix_length / -2) + (tile * datalamp.TILE_LENGTH)
+    for column in reversed(range(start_column, start_column + datalamp.TILE_LENGTH)):
+      print delim
+      print """{"point": [%.2f, %.2f, %.2f]}""" % (column * spacing, 0, row * spacing)
+      delim = ","
+
+print "]"

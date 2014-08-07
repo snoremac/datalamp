@@ -22,6 +22,7 @@ class ConsoleRunner(object):
 	def start(self, program):
 		pp = pprint.PrettyPrinter(indent = 4)
 	
+		program.init(config.config)
 		for event in program.input_chain(config.config):
 			program.on_tick([event])
 			pp.pprint(event)
@@ -40,6 +41,7 @@ class OPCRunner(object):
 		self.client = opc.Client(config.config.opc_host + ":" + config.config.opc_port)
 
 	def start(self, program):
+		program.init(config.config)
 		for event in program.input_chain(config.config):
 			program.on_tick([event])
 			self.client.put_pixels(program.pixels, channel = 0)
@@ -61,6 +63,7 @@ class SerialRunner(object):
 	def start(self, program):
 		max_score = 100
 
+		program.init(config.config)
 		for event in program.input_chain(config.config):
 			program.on_tick([event])
 

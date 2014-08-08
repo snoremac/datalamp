@@ -20,7 +20,7 @@ def init(config):
   sensitivity = coefficient / float(config.average_sensitivity)
   
   global pixels
-  pixels = [(0, 0, 0) for i in range((datalamp.TILE_LENGTH ** 2) * config.tiles)]  
+  pixels = [(0, 0, 0) for i in range(datalamp.matrix_pixels(config))]
 
 def input_chain(config):
   chain = None

@@ -1,10 +1,13 @@
 
 import time
 
+import datalamp
+
 class ChaserInput(object):
   
   def __init__(self, chain, config):
     self.event_delay = 1.0 / int(config.throttle) if int(config.throttle) > 0 else 0
+    self.max_index = datalamp.matrix_pixels(config)
     self.last_index = 0
     
   def __iter__(self):
@@ -20,7 +23,7 @@ class ChaserInput(object):
       
     chaser_dict = dict(address = self.last_index)
     self.last_index += 1
-    if (self.last_index == 64):
+    if (self.last_index == self.max_index):
       self.last_index = 0
     
     return chaser_dict

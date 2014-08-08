@@ -58,9 +58,7 @@ class RankAddressDecorator(object):
       stream = open(config.rankings_url)
     
     rankings = json.loads(stream.read())
-    
-    total_pixels = (datalamp.TILE_LENGTH ** 2) * config.tiles
-    self.emoji_ranks = { data["id"]: ranking for ranking, data in enumerate(rankings) if total_pixels > ranking >= 0 }
+    self.emoji_ranks = { data["id"]: ranking for ranking, data in enumerate(rankings) if datalamp.matrix_pixels(config) > ranking >= 0 }
     
   def __iter__(self):
     return self

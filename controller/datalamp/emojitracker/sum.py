@@ -16,7 +16,7 @@ pixels = []
 
 def init(config):
   global pixels, lit_pixels
-  pixels = [(0, 0, 0) for i in range((datalamp.TILE_LENGTH ** 2) * config.tiles)]  
+  pixels = [(0, 0, 0) for i in range(datalamp.matrix_pixels(config))]
   lit_pixels = [(0, 0, 0, 0) for i in range(3)]
 
 def input_chain(config):

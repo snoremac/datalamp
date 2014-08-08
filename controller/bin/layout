@@ -8,22 +8,29 @@ sys.path.append(dirname(dirname(realpath(__file__))))
 import datalamp
 
 argument_parser = argparse.ArgumentParser()
-argument_parser.add_argument("-t", "--tiles", type=int, default=1, metavar="TILES", help="Number of NeoMatrix tiles in layout")
+argument_parser.add_argument("-r", "--row-tiles", type=int, default=1, metavar="ROW_TILES", help="Number of NeoMatrix row tiles")
+argument_parser.add_argument("-c", "--column-tiles", type=int, default=1, metavar="COLUMN_TILES", help="Number of NeoMatrix column tiles")
 args = argument_parser.parse_args(sys.argv[1:])
 
-matrix_length = args.tiles * datalamp.TILE_LENGTH
-
 spacing = 0.2
-lines = []
-print "["
+points = []
+
+for row_tile in reversed(range(args.row_tiles)):
+  for column_tile in reversed(range(args.column_tiles)):
+    for row in reversed(range(0, datalamp.TILE_LENGTH)):
+      y = (row * spacing) + (row_tile * datalamp.TILE_LENGTH * spacing)
+      for column in reversed(range(0, datalamp.TILE_LENGTH)):
+        x = (column * spacing) + (column_tile * datalamp.TILE_LENGTH * spacing)
+        points.append((x, y))
+
+x_offset = (datalamp.matrix_height(args) / 2) * spacing
+y_offset = (datalamp.matrix_width(args) / 2) * spacing
+points = [(point[0] - x_offset, point[1] - y_offset) for point in points]
 
 delim = ""
-for tile in range(args.tiles):
-  for row in reversed(range((matrix_length / -2), (matrix_length / 2))):
-    start_column = (matrix_length / -2) + (tile * datalamp.TILE_LENGTH)
-    for column in reversed(range(start_column, start_column + datalamp.TILE_LENGTH)):
-      print delim
-      print """{"point": [%.2f, %.2f, %.2f]}""" % (column * spacing, 0, row * spacing)
-      delim = ","
-
+print "["
+for point in points:
+  print delim
+  print """{"point": [%.2f, %.2f, %.2f]}""" % (point[0], 0, point[1])
+  delim = ","
 print "]"

@@ -5,7 +5,7 @@ from datalamp.chaser import ChaserInput
 
 INPUT_CHAIN = [
   ChaserInput,
-  #SpiralAddressDecorator
+  SpiralAddressDecorator
 ]
 
 pixels = []
@@ -13,7 +13,7 @@ pixels = []
 def init(config):
   global pixels, lit_pixels
   lit_pixels = 0
-  pixels = [(0, 0, 0) for i in range((datalamp.TILE_LENGTH ** 2) * config.tiles)]  
+  pixels = [(0, 0, 0) for i in range(datalamp.matrix_pixels(config))]
 
 def input_chain(config):
   chain = None
@@ -28,5 +28,5 @@ def on_tick(events):
     if lit_pixels == len(pixels):
       pixels = [(0, 0, 0) for i in range(len(pixels))]
       lit_pixels = 0
-    pixels[event["address"]] = (255, 255, 255)
+    pixels[event["address"]] = (100, 100, 100)
     lit_pixels += 1

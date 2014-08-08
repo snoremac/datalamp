@@ -8,9 +8,11 @@ class SpiralAddressDecorator(object):
   
   def __init__(self, chain, config):
     self.chain = chain
-    #self.spiral_addresses = self.to_spiral_addresses(self.to_quad_tile_addresses(self.horizontal_matrix(16, 16)))
-    dimension = datalamp.TILE_LENGTH * config.tiles
-    self.spiral_addresses = self.to_spiral_addresses(self.horizontal_matrix(dimension, dimension))
+    
+    self.spiral_addresses = self.to_spiral_addresses(self.tiled_matrix(
+        config.row_tiles,
+        config.column_tiles,
+        datalamp.TILE_LENGTH))
     
   def __iter__(self):
     return self
@@ -32,35 +34,20 @@ class SpiralAddressDecorator(object):
         matrix[row].append((row * columns) + column)
     return matrix
     
-  def to_quad_tile_addresses(self, matrix):
-    quad_matrix = []
-    
-    if (len(matrix) != len(matrix[0])):
-      raise ArgumentError("Can't make a quad matrix with an input of non-equal dimensions")
-    
-    tile_rows = tile_columns = len(matrix) / 2
-    tile_length = tile_rows * tile_columns
-    
-    for row_index in range(0, tile_rows):
-      quad_matrix.append([])
-      for column_index in range(0, tile_columns):
-        quad_matrix[row_index].append((row_index * tile_columns) + column_index)
-      
-    for row_index in range(0, tile_rows):
-      for column_index in range(0, tile_columns):
-        quad_matrix[row_index].append((row_index * tile_columns) + (tile_length * 1) + column_index)
+  def tiled_matrix(self, row_tiles, column_tiles, tile_length):
+    matrix = []
+    i = 0
 
-    for row_index in range(tile_rows, tile_rows * 2):
-      quad_matrix.append([])
-      for column_index in range(0, tile_columns):
-        quad_matrix[row_index].append((row_index * tile_columns) + (tile_length * 1) + column_index)
-
-    for row_index in range(tile_rows, tile_rows * 2):
-      for column_index in range(0, tile_columns):
-        quad_matrix[row_index].append((row_index * tile_columns) + (tile_length * 2) + column_index)
-
-    return quad_matrix
+    for row_tile in range(row_tiles):
+      for column_tile in range(column_tiles):
+        for row in range(0, tile_length):
+          if column_tile == 0:
+            matrix.append([])
+          for column in range(0, tile_length):
+            matrix[(row_tile * tile_length) + row].append(i)
+            i += 1
     
+    return matrix
 
   def to_spiral_addresses(self, matrix):
     spiral = []

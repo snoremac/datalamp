@@ -8,8 +8,8 @@ sys.path.append(dirname(dirname(realpath(__file__))))
 import datalamp
 
 argument_parser = argparse.ArgumentParser()
-argument_parser.add_argument("-r", "--row-tiles", type=int, default=1, metavar="ROW_TILES", help="Number of NeoMatrix row tiles")
-argument_parser.add_argument("-c", "--column-tiles", type=int, default=1, metavar="COLUMN_TILES", help="Number of NeoMatrix column tiles")
+argument_parser.add_argument("-r", "--row-tiles", type=int, default=2, metavar="ROW_TILES", help="Number of NeoMatrix row tiles")
+argument_parser.add_argument("-c", "--column-tiles", type=int, default=2, metavar="COLUMN_TILES", help="Number of NeoMatrix column tiles")
 args = argument_parser.parse_args(sys.argv[1:])
 
 spacing = 0.2

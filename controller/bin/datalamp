@@ -18,15 +18,15 @@ def parse_args(argv):
   runner.add_parsers(subparsers, argv)
 
   argument_parser.add_argument("-p", "--program", metavar="PROGRAM", default="emoji-sum", help="The visualisation program to run")
-  argument_parser.add_argument("-r", "--row-tiles", type=int, default=1, metavar="ROW_TILES", help="Number of NeoMatrix row tiles")
-  argument_parser.add_argument("-c", "--column-tiles", type=int, default=1, metavar="COLUMN_TILES", help="Number of NeoMatrix column tiles")
+  argument_parser.add_argument("-r", "--row-tiles", type=int, default=2, metavar="ROW_TILES", help="Number of NeoMatrix row tiles")
+  argument_parser.add_argument("-c", "--column-tiles", type=int, default=2, metavar="COLUMN_TILES", help="Number of NeoMatrix column tiles")
 
   argument_parser.add_argument("-f", "--feed-url", metavar="INPUT", default="http://stream.emojitracker.com/subscribe/raw", help="The url or file path to use as the emojitracker feed")
-  argument_parser.add_argument("-k", "--rankings-url", metavar="INPUT", default="http://www.emojitracker.com/api/rankings", help="The url or file path to use for the initial emoji rankings")
+  argument_parser.add_argument("-k", "--rankings-url", metavar="RANKING_INPUT", default="http://www.emojitracker.com/api/rankings", help="The url or file path to use for the initial emoji rankings")
   argument_parser.add_argument("-s", "--start-rank", type=int, default=0, metavar="RANK", help="Highest ranked emoji to track")
   argument_parser.add_argument("-o", "--throttle", type=int, default=0, metavar="HERTZ", help="Throttle input to a maximum number of events per second")
-  argument_parser.add_argument("-v", "--average-sensitivity", type=int, default=5, metavar="SENSITIVITY", help="Sensitivity (relative to maximum) of moving average calculation")
-  argument_parser.add_argument("-w", "--average-window", type=int, default=1000, metavar="WINDOW", help="Window for moving average calculation, in milliseconds")
+  argument_parser.add_argument("-v", "--average-sensitivity", type=int, default=8, metavar="SENSITIVITY", help="Sensitivity (relative to maximum) of moving average calculation")
+  argument_parser.add_argument("-w", "--average-window", type=int, default=5000, metavar="WINDOW", help="Window for moving average calculation, in milliseconds")
 
   args = argument_parser.parse_args(argv)
 

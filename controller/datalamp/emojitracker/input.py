@@ -1,4 +1,5 @@
 
+from collections import OrderedDict
 import gzip
 import json
 import re
@@ -37,7 +38,7 @@ class EmojiTrackerInput(object):
       line = self.stream.readline()
       match = re.search("data:(.+)", line)
       if (match):
-    	 	emoji_dict = dict(id = match.group(1))
+        emoji_dict = OrderedDict({ "id": match.group(1) })
         
     if line == '':
       raise StopIteration()

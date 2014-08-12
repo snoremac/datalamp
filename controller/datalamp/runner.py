@@ -49,26 +49,27 @@ class OPCRunner(object):
 
 class SerialRunner(object):
 	
+	EVENT_MARKER = 255
+	
 	@classmethod
 	def add_parser(cls, subparsers, argv):
 		parser = subparsers.add_parser("serial")
-		parser.add_argument("-d", "--device", default="/dev/ttyATH0", metavar="DEVICE", help="Serial device to write events to")
-		parser.add_argument("-b", "--baud", default="115200", metavar="BAUD", help="Serial baud rate")
+		parser.add_argument("-d", "--serial-device", default="/dev/ttyATH0", metavar="DEVICE", help="Serial device to write events to")
+		parser.add_argument("-b", "--serial-baud", default="115200", metavar="BAUD", help="Serial baud rate")
 		parser.set_defaults(func = SerialRunner)
 
 	def __init__(self):
-		self.input_chain = input_chain
 		self.serial_port = serial.Serial(config.config.serial_device, config.config.serial_baud)
 
 	def start(self, program):
-		max_score = 100
-
 		program.init(config.config)
 		for event in program.input_chain(config.config):
-			program.on_tick([event])
-
-			# address_low_7 = emoji_dict["rank"] & 127
-			# address_high_7 = (emoji_data["rank"] & (127 << 7)) >> 7
-			# serial_port.write("".join(map(chr, [255, address_low_7, address_high_7, min(int(round((emoji_dict["sum"] / max_score) * 100)), 100)])))
-
+			address_low_7 = event["address"] & 127
+			address_high_7 = (event["address"] & (127 << 7)) >> 7
+			serial_port.write("".join(map(chr, [SerialRunner.EVENT_MARKER, address_low_7, address_high_7])))
+			if "avg" in event:
+				avg = event["avg"]
+			if avg > 254:
+				avg = 254
+			serial_port.write(chr(avg))
 

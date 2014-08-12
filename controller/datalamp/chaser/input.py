@@ -1,5 +1,6 @@
 
 import time
+from collections import OrderedDict
 
 import datalamp
 
@@ -21,7 +22,7 @@ class ChaserInput(object):
     while (time.time() < end_delay):
 			pass
       
-    chaser_dict = dict(address = self.last_index)
+    chaser_dict = OrderedDict({ "address": self.last_index })
     self.last_index += 1
     if (self.last_index == self.max_index):
       self.last_index = 0

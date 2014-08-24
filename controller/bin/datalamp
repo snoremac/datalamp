@@ -25,7 +25,7 @@ def parse_args(argv):
   argument_parser.add_argument("-k", "--rankings-url", metavar="RANKING_INPUT", default="http://www.emojitracker.com/api/rankings", help="The url or file path to use for the initial emoji rankings")
   argument_parser.add_argument("-s", "--start-rank", type=int, default=0, metavar="RANK", help="Highest ranked emoji to track")
   argument_parser.add_argument("-o", "--throttle", type=int, default=0, metavar="HERTZ", help="Throttle input to a maximum number of events per second")
-  argument_parser.add_argument("-v", "--average-sensitivity", type=int, default=8, metavar="SENSITIVITY", help="Sensitivity (relative to maximum) of moving average calculation")
+  argument_parser.add_argument("-v", "--average-sensitivity", type=int, default=300, metavar="SENSITIVITY", help="Sensitivity (relative to maximum) of moving average calculation")
   argument_parser.add_argument("-w", "--average-window", type=int, default=5000, metavar="WINDOW", help="Window for moving average calculation, in milliseconds")
 
   args = argument_parser.parse_args(argv)

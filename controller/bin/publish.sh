@@ -1,4 +1,4 @@
 #!/bin/bash
 
-rsync -avz $(dirname $0)/../datalamp yun01.ss:/root/datalamp
+rsync -avz $(dirname $0)/../../controller/ yun02.ss:/root/datalamp
 

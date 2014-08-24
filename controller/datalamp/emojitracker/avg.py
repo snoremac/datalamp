@@ -16,11 +16,11 @@ pixels = []
 
 def init(config):
   global sensitivity
-  coefficient = float(config.average_window) / 40
-  sensitivity = coefficient / float(config.average_sensitivity)
+  sensitivity = config.average_sensitivity / 100.0
   
-  global pixels
+  global pixels, lit_pixels
   pixels = [(0, 0, 0) for i in range(datalamp.matrix_pixels(config))]
+  lit_pixels = [(0, 0, 0, 0) for i in range(3)]
 
 def input_chain(config):
   chain = None
@@ -30,7 +30,13 @@ def input_chain(config):
 
 def on_tick(events):
   for event in events:
-    avg = int(round((event["avg"] / sensitivity) * 255))
+    pixels[event["address"]] = (0, 0, 0)
+    lit_pixel = lit_pixels.pop(0)
+    pixels[lit_pixel[0]] = (lit_pixel[1], lit_pixel[2], lit_pixel[3])
+
+    avg = int(round(event["avg"] * sensitivity))
+    if avg > 255:
+      avg = 255
 
     if avg < 127:
     	green = 255
@@ -42,4 +48,4 @@ def on_tick(events):
     green = int(round((avg / 255.0) * green))
     red = int(round((avg / 255.0) * red))
     	
-    pixels[event["address"]] = (red, green, 0)
+    lit_pixels.append((event["address"], red, green, 0))

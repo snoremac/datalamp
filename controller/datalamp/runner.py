@@ -66,10 +66,10 @@ class SerialRunner(object):
 		for event in program.input_chain(config.config):
 			address_low_7 = event["address"] & 127
 			address_high_7 = (event["address"] & (127 << 7)) >> 7
-			serial_port.write("".join(map(chr, [SerialRunner.EVENT_MARKER, address_low_7, address_high_7])))
+			self.serial_port.write("".join(map(chr, [SerialRunner.EVENT_MARKER, address_low_7, address_high_7])))
 			if "avg" in event:
 				avg = event["avg"]
-			if avg > 254:
-				avg = 254
-			serial_port.write(chr(avg))
-
+				if avg > 254:
+					avg = 254
+				self.serial_port.write(chr(avg))
+	

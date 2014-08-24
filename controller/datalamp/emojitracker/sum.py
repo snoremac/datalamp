@@ -27,7 +27,7 @@ def input_chain(config):
 	
 def on_tick(events):
   for event in events:
-    pixels[event["address"]] = (0,0, 0)
+    pixels[event["address"]] = (0, 0, 0)
     lit_pixel = lit_pixels.pop(0)
     pixels[lit_pixel[0]] = (lit_pixel[1], lit_pixel[2], lit_pixel[3])
 

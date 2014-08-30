@@ -16,7 +16,7 @@ void emoji_avg_program_init(struct program_config config) {
 
 void emoji_avg_on_event(struct program_event* event) {
   uint8_t avg = event->data[0];
-	double sensitivity = 3;
+	double sensitivity = 20;
 
 	uint16_t adjusted_avg = (uint16_t) round(avg * sensitivity);
   if (adjusted_avg > 255) {

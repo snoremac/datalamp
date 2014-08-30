@@ -11,7 +11,7 @@ struct program_config {
 };
 
 struct program_event {
-  uint8_t address;
+  uint16_t address;
   char data[PROGRAM_EVENT_DATA_SIZE];
 };
 

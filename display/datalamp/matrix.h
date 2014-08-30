@@ -5,12 +5,12 @@
 
 #include "avrlaunch/rgb_led.h"
 
-#define PIXEL_COUNT 128
-#define PIXEL_BYTES_COUNT 384
+#define PIXEL_COUNT 256
+#define PIXEL_BYTES_COUNT 768
 #define PIXEL_RESTORE_BUFFER_COUNT 32
 
 struct pixel {
-	uint8_t address;
+	uint16_t address;
 	struct rgb colour;
 };
 

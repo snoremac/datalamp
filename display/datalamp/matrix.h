@@ -18,6 +18,8 @@ void matrix_init(void);
 
 void matrix_set_pixel(struct pixel pixel);
 
-void matrix_clear(void);
+void matrix_clear_pixels(void);
+
+void matrix_write(void);
 
 #endif

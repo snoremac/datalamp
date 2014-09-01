@@ -10,8 +10,14 @@
 #include "datalamp/matrix.h"
 #include "datalamp/program.h"
 
+struct program_event_descriptor emoji_avg_program_get_descriptor(void) {
+  return (struct program_event_descriptor) {
+    .header_size = 2,
+    .data_size = 1
+  };
+}
+
 void emoji_avg_program_init(struct program_config config) {
-  matrix_init();
 }
 
 void emoji_avg_on_event(struct program_event* event) {

@@ -1,5 +1,6 @@
  
 #include <stdio.h>
+#include <string.h>
 #include <util/atomic.h>
 
 #include "avrlaunch/avrlaunch.h"
@@ -12,9 +13,9 @@
 
 #include "datalamp/matrix.h"
 #include "datalamp/neopixel.h"
+#include "datalamp/neopixel_adafruit.h"
 
-static struct buffer matrix_buffer;
-static uint8_t matrix_data[PIXEL_BYTES_COUNT];
+static uint8_t _matrix_data[PIXEL_BYTES_COUNT];
 
 static struct buffer _pixel_restore_buffer;
 static struct pixel _pixel_restore_data[PIXEL_RESTORE_BUFFER_COUNT];
@@ -24,15 +25,14 @@ static uint8_t pixel_restore_task_id;
 
 static void pixel_restore_task(struct task* task);
 static void update_matrix_data(uint16_t base_address, struct rgb* colour_data);
-static void write_matrix_data(uint8_t* data);
-static void dump_matrix_data(struct buffer* buffer, FILE* stream);
+static void dump_matrix_data(uint8_t* matrix_data, uint16_t length, FILE* stream);
 
 void matrix_init(void) {
 	matrix_gpio = GPIO(PORTD, PIN1);
 	gpio_set_output(&matrix_gpio);
 	
-	matrix_buffer = buffer_init(matrix_data, PIXEL_BYTES_COUNT, sizeof(uint8_t));
-  matrix_clear();
+  matrix_clear_pixels();
+  matrix_write();
 		
 	//_pixel_restore_buffer = buffer_init(_pixel_restore_data, PIXEL_RESTORE_BUFFER_COUNT, sizeof(struct pixel));
 	//pixel_restore_task_id = scheduler_add_task(&(struct task_config){"res", TASK_FOREVER, TASK_ASAP}, pixel_restore_task, NULL);
@@ -44,10 +44,15 @@ void matrix_set_pixel(struct pixel pixel) {
 	update_matrix_data(pixel.address, &pixel.colour);
 }
 
-void matrix_clear() {
-  uint8_t zero = 0;
-	for (uint16_t i = 0; i < PIXEL_BYTES_COUNT; i++) { buffer_push_overflow(&matrix_buffer, &zero); }  
-	write_matrix_data(matrix_data);
+void matrix_clear_pixels() {
+  memset(_matrix_data, 0, PIXEL_BYTES_COUNT);
+}
+
+static void update_matrix_data(uint16_t base_address, struct rgb* colour_data) {
+	LOG_DEBUG("Update pixel data: %u, %u, %u, %u\r\n", base_address, colour_data->red, colour_data->green, colour_data->blue);
+	_matrix_data[(base_address  * 3)] = colour_data->green;
+	_matrix_data[(base_address * 3) + 1] = colour_data->red;
+	_matrix_data[(base_address * 3) + 2] = colour_data->blue;
 }
 
 static void pixel_restore_task(struct task* task) {
@@ -57,30 +62,19 @@ static void pixel_restore_task(struct task* task) {
   }
 }
 
-static void update_matrix_data(uint16_t base_address, struct rgb* colour_data) {
-	//LOG_DEBUG("Update pixel data: %u, %u, %u, %u\r\n", base_address, colour_data->red, colour_data->green, colour_data->blue);
-	matrix_data[(base_address  * 3)] = colour_data->green;
-	matrix_data[(base_address * 3) + 1] = colour_data->red;
-	matrix_data[(base_address * 3) + 2] = colour_data->blue;
-	write_matrix_data(matrix_data);
-}
-
-static void write_matrix_data(uint8_t* data) {
+void matrix_write() {
 #if LOG_LEVEL >= LOG_LEVEL_DEBUG
-  //dump_matrix_data(&matrix_buffer, shell_get_stream());
+  //dump_matrix_data(_matrix_data, PIXEL_BYTES_COUNT, shell_get_stream());
 #endif
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-	   neopixel_write(PIXEL_BYTES_COUNT, data, matrix_gpio.data, _BV(matrix_gpio.pin));
+	   //neopixel_write(PIXEL_BYTES_COUNT, _matrix_data, matrix_gpio.data, _BV(matrix_gpio.pin));
+	   neopixel_adafruit_write(PIXEL_BYTES_COUNT, _matrix_data);
   }
 }
 
-static void dump_matrix_data(struct buffer* buffer, FILE* stream) {
-  for (uint16_t i = 0; i < buffer->element_count; i += 3) {
-    fprintf(stream, "(%02x, %02x, %02x) ",
-      buffer_uint8_at(buffer, i),
-      buffer_uint8_at(buffer, i + 1),
-      buffer_uint8_at(buffer, i + 2)
-    );
+static void dump_matrix_data(uint8_t* matrix_data, uint16_t length, FILE* stream) {
+  for (uint16_t i = 0; i < length; i += 3) {
+    fprintf(stream, "(%02x, %02x, %02x) ", matrix_data[i], matrix_data[i + 1], matrix_data[i + 2]);
     if ((i + 3) % 24 == 0) {
       fputc('\r', stream);
       fputc('\n', stream);

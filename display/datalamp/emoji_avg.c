@@ -22,7 +22,7 @@ void emoji_avg_program_init(struct program_config config) {
 
 void emoji_avg_on_event(struct program_event* event) {
   uint8_t avg = event->data[0];
-	double sensitivity = 20;
+	double sensitivity = 10;
 
 	uint16_t adjusted_avg = (uint16_t) round(avg * sensitivity);
   if (adjusted_avg > 255) {
@@ -33,16 +33,16 @@ void emoji_avg_on_event(struct program_event* event) {
 	uint8_t red = 0;
 	uint8_t green = 0;
 	
-	if (adjusted_avg < 127) {
+	if (adjusted_avg < 60) {
 		green = 255;
-		red = 255 - ((128 - adjusted_avg) * 2)		;
+		red = 255 - ((128 - adjusted_avg) * 2);
 	} else {
 		green = 255 - ((adjusted_avg - 128) * 2);
 		red = 255;
 	}
 
-	green = (uint8_t) round((adjusted_avg / 255.0) * green);
-	red = (uint8_t) round((adjusted_avg / 255.0) * red);
+	green = (uint8_t) round((adjusted_avg / 768.0) * green);
+	red = (uint8_t) round((adjusted_avg / 768.0) * red);
   
   struct pixel pixel = {
     .address = event->address,

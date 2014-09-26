@@ -13,7 +13,6 @@
 
 #include "datalamp/matrix.h"
 #include "datalamp/neopixel.h"
-#include "datalamp/neopixel_adafruit.h"
 
 static uint8_t _matrix_data[PIXEL_BYTES_COUNT];
 
@@ -25,7 +24,9 @@ static uint8_t pixel_restore_task_id;
 
 static void pixel_restore_task(struct task* task);
 static void update_matrix_data(uint16_t base_address, struct rgb* colour_data);
+#if LOG_LEVEL >= LOG_LEVEL_DEBUG
 static void dump_matrix_data(uint8_t* matrix_data, uint16_t length, FILE* stream);
+#endif
 
 void matrix_init(void) {
 	matrix_gpio = GPIO(PORTD, PIN1);
@@ -66,14 +67,14 @@ static void pixel_restore_task(struct task* task) {
 
 void matrix_write() {
 #if LOG_LEVEL >= LOG_LEVEL_DEBUG
-  //dump_matrix_data(_matrix_data, PIXEL_BYTES_COUNT, shell_get_stream());
+  dump_matrix_data(_matrix_data, PIXEL_BYTES_COUNT, shell_get_stream());
 #endif
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-	   //neopixel_write(PIXEL_BYTES_COUNT, _matrix_data, matrix_gpio.data, _BV(matrix_gpio.pin));
-	   neopixel_adafruit_write(PIXEL_BYTES_COUNT, _matrix_data);
+	   neopixel_write(PIXEL_BYTES_COUNT, _matrix_data, matrix_gpio.data, _BV(matrix_gpio.pin));
   }
 }
 
+#if LOG_LEVEL >= LOG_LEVEL_DEBUG
 static void dump_matrix_data(uint8_t* matrix_data, uint16_t length, FILE* stream) {
   for (uint16_t i = 0; i < length; i += 3) {
     fprintf(stream, "(%02x, %02x, %02x) ", matrix_data[i], matrix_data[i + 1], matrix_data[i + 2]);
@@ -85,3 +86,4 @@ static void dump_matrix_data(uint8_t* matrix_data, uint16_t length, FILE* stream
   fputc('\r', stream);
   fputc('\n', stream);
 }
+#endif

@@ -72,4 +72,6 @@ class SerialRunner(object):
 				if avg > 254:
 					avg = 254
 				self.serial_port.write(chr(avg))
+			if config.config.debug:
+				print ", ".join(map(str, [SerialRunner.EVENT_MARKER, address_low_7, address_high_7]))
 	

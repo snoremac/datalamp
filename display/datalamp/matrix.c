@@ -34,14 +34,16 @@ void matrix_init(void) {
   matrix_clear_pixels();
   matrix_write();
 		
-	//_pixel_restore_buffer = buffer_init(_pixel_restore_data, PIXEL_RESTORE_BUFFER_COUNT, sizeof(struct pixel));
-	//pixel_restore_task_id = scheduler_add_task(&(struct task_config){"res", TASK_FOREVER, TASK_ASAP}, pixel_restore_task, NULL);
+	_pixel_restore_buffer = buffer_init(_pixel_restore_data, PIXEL_RESTORE_BUFFER_COUNT, sizeof(struct pixel));
+	pixel_restore_task_id = scheduler_add_task(&(struct task_config){"res", TASK_FOREVER, 6}, pixel_restore_task, NULL);
 }
 
 void matrix_set_pixel(struct pixel pixel) {
-  //buffer_push_overflow(&_pixel_restore_buffer, &pixel);
-	//update_matrix_data(pixel.address, &RGB_BLACK);
-	update_matrix_data(pixel.address, &pixel.colour);
+  if (buffer_push_no_overflow(&_pixel_restore_buffer, &pixel) != NULL) {
+	   update_matrix_data(pixel.address, &RGB_BLACK);
+  } else {
+	   update_matrix_data(pixel.address, &pixel.colour);    
+  }
 }
 
 void matrix_clear_pixels() {

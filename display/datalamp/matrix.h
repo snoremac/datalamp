@@ -7,7 +7,7 @@
 
 #define PIXEL_COUNT 256
 #define PIXEL_BYTES_COUNT 768
-#define PIXEL_RESTORE_BUFFER_COUNT 32
+#define PIXEL_RESTORE_BUFFER_COUNT 64
 
 struct pixel {
 	uint16_t address;
